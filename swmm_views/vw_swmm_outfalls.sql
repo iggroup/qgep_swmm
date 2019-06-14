@@ -15,7 +15,7 @@ SELECT
 	dp.identifier as description,
 	concat(dp.remark, ',', we.remark) as tag,
 	wn.bottom_level as invert_elev,
-	'NO' as tide_gate
+	'NO'::varchar(10) as tide_gate
 FROM qgep_od.vw_discharge_point as dp
 LEFT JOIN qgep_od.wastewater_node wn on wn.obj_id = dp.obj_id
 LEFT JOIN qgep_od.wastewater_networkelement we ON we.obj_id::text = wn.obj_id::text;

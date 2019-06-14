@@ -1,1 +1,2 @@
+DROP SCHEMA IF EXISTS qgep_swmm;
 CREATE SCHEMA IF NOT EXISTS qgep_swmm;

@@ -17,7 +17,7 @@ SELECT
 	st_x(st_centroid(perimeter_geometry)) as X_coordinate,
 	st_y(st_centroid(perimeter_geometry)) as Y_coordinate,
 	ca.identifier as description,
-	'catchment_area' as tag,
+	'catchment_area'::varchar as tag,
 	fk_wastewater_networkelement_ww_current as outlet, -- name of node or another subcatchement that receives runoff
 	surface_area as area
 FROM qgep_od.catchment_area as ca
