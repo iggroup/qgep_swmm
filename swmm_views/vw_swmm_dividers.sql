@@ -12,7 +12,7 @@ CREATE OR REPLACE VIEW qgep_swmm.vw_dividers AS
 
 SELECT
 	ma.obj_id as Name,
-	wn.bottom_level as InvertElevation,
+	coalesce(wn.bottom_level,0) as InvertElevation,
 	'*' as DivertedLink ,
 	'CUTOFF' as Type,
 	0 as CutoffFlow,
@@ -36,7 +36,7 @@ UNION ALL
 
 SELECT
 	ss.obj_id as Name,
-	wn.bottom_level as InvertElevation,
+	coalesce(wn.bottom_level,0) as InvertElevation,
 	'*' as DivertedLink,
 	'CUTOFF' as Type,
 	0 as CutoffFlow,

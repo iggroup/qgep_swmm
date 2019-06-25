@@ -11,7 +11,7 @@ CREATE OR REPLACE VIEW qgep_swmm.vw_junctions AS
 -- manholes
 SELECT
 	ma.obj_id as Name,
-	wn.bottom_level as InvertElev,
+	coalesce(wn.bottom_level,0) as InvertElev,
 	(co.level-wn.bottom_level) as MaxDepth,
 	NULL::float as InitDepth,
 	NULL::float as SurchargeDepth,
@@ -33,7 +33,7 @@ UNION ALL
 -- special structures
 SELECT
 	ss.obj_id as Name,
-	wn.bottom_level as InvertElev,
+	coalesce(wn.bottom_level,0) as InvertElev,
 	(co.level-wn.bottom_level) as MaxDepth,
 	NULL::float as InitDepth,
 	NULL::float as SurchargeDepth,

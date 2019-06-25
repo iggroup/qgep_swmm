@@ -9,9 +9,9 @@ DROP VIEW IF EXISTS qgep_swmm.vw_subcatchments;
 CREATE OR REPLACE VIEW qgep_swmm.vw_subcatchments AS
 
 SELECT 
-	ca.obj_id as Name,
+	replace(ca.obj_id, ' ', '_') as Name,
 	'*'::varchar as RainGage,
-	fk_wastewater_networkelement_ww_current as Outlet,
+	coalesce(fk_wastewater_networkelement_ww_current, '*') as Outlet,
 	surface_area as Area,
 	25 as percImperv,
 	500 as Width,

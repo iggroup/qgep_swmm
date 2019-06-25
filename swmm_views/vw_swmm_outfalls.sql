@@ -10,7 +10,7 @@ CREATE OR REPLACE VIEW qgep_swmm.vw_outfalls AS
 
 SELECT
 	dp.obj_id as Name,
-	wn.bottom_level as InvertElev,
+	coalesce(wn.bottom_level,0) as InvertElev,
 	'FREE'::varchar as Type,
 	NULL as StageData,
 	'NO'::varchar as tide_gate,

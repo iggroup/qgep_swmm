@@ -10,7 +10,7 @@ CREATE OR REPLACE VIEW qgep_swmm.vw_storages AS
 
 SELECT
 	ss.obj_id as Name,
-	wn.bottom_level as InvertElev,
+	coalesce(wn.bottom_level,0) as InvertElev,
 	(co.level-wn.bottom_level) as MaxDepth,
 	0 as InitDepth,
 	'FUNCTIONAL' as Shape,
@@ -67,7 +67,7 @@ WHERE ss.function IN (
 UNION ALL
 SELECT
 	ii.obj_id as Name,
-	wn.bottom_level as InvertElev,
+	coalesce(wn.bottom_level,0) as InvertElev,
 	(ii.upper_elevation-wn.bottom_level) as MaxDepth,
 	0 as InitDepth,
 	'FUNCTIONAL' as Shape,

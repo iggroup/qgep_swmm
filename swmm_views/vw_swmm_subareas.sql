@@ -13,7 +13,7 @@ DROP VIEW IF EXISTS qgep_swmm.vw_subareas;
 CREATE OR REPLACE VIEW qgep_swmm.vw_subareas AS
 
 SELECT 
-	ca.obj_id as Subcatchment,
+	replace(ca.obj_id, ' ', '_')  as Subcatchment,
 	0.01 as NImperv,
 	0.1 as NPerv,
 	0.05 as SImperv,

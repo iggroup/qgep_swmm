@@ -52,5 +52,3 @@ psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.losses AS TABLE qgep_swmm.vw
 psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.coordinates AS TABLE qgep_swmm.vw_coordinates"
 psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.vertices AS TABLE qgep_swmm.vw_vertices" 
 psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.polygons AS TABLE qgep_swmm.vw_polygons" 
-
-pause

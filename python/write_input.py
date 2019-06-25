@@ -4,6 +4,7 @@ import psycopg2
 import re
 import os
 import codecs
+import subprocess
 
 class qgep_swmm:
     
@@ -19,7 +20,11 @@ class qgep_swmm:
         # Connects to service and get data and attributes from tableName
         con = psycopg2.connect(service=self.service)
         cur = con.cursor()
-        cur.execute('select * from qgep_swmm.%s' %tableName)
+        try:
+            cur.execute('select * from qgep_swmm.%s' %tableName)
+        except:
+            print ('Table %s doesnt exists' %tableName)
+            return None, None
         data = cur.fetchall()
         attributes = [desc[0] for desc in cur.description]
         
@@ -32,30 +37,33 @@ class qgep_swmm:
         # Create commented line which contains the field names
         fields = ""
         data, attributes = self.getSwmmTable(tableName)
-        for i,field in enumerate(attributes):
-            # Does not write values stored in columns descriptions, tags and geom
-            if field not in ('description', 'tag', 'geom'):
-                fields+=field +"\t"
-        
-        # Create input paragraph
-        tbl =u'['+tableName+']\n'\
-            ';'+fields+'\n'
-        for feature in data:
-            for i, v in enumerate(feature):
+        if data != None:
+            for i,field in enumerate(attributes):
                 # Does not write values stored in columns descriptions, tags and geom
-                if attributes[i] not in ('description', 'tag', 'geom'):
-                    if str(v) != 'None':
-                        m = re.search('^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d:\d\d):\d\d',str(v)) # for date and time saved as timestamps
+                if field not in ('description', 'tag', 'geom'):
+                    fields+=field +"\t"
             
-                        if m:
-                            tbl += '/'.join(m.group(2,3,1))+'\t'+m.group(4)+'\t'
-                        else:
-                            tbl += str(v)+'\t'
-                    else: 
-                        tbl += '\t'
+            # Create input paragraph
+            tbl =u'['+tableName+']\n'\
+                ';;'+fields+'\n'
+            for feature in data:
+                for i, v in enumerate(feature):
+                    # Does not write values stored in columns descriptions, tags and geom
+                    if attributes[i] not in ('description', 'tag', 'geom'):
+                        if str(v) != 'None':
+                            m = re.search('^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d:\d\d):\d\d',str(v)) # for date and time saved as timestamps
+                
+                            if m:
+                                tbl += '/'.join(m.group(2,3,1))+'\t'+m.group(4)+'\t'
+                            else:
+                                tbl += str(v)+'\t'
+                        else: 
+                            tbl += '\t'
+                tbl += '\n'
             tbl += '\n'
-        tbl += '\n'
-        return tbl;
+            return tbl;
+        else:
+            return '\n'
     
     def swmmKeyVal(self, table_name, simul_title):
         
@@ -125,21 +133,22 @@ class qgep_swmm:
         f.write(self.copy_parameters_from_template('EVAPORATION'))
         f.write(self.copy_parameters_from_template('TEMPERATURE'))
         
-        f.write(self.swmmTable('SUBCATCHMENTS'))
+#        f.write(self.swmmTable('SUBCATCHMENTS'))
 #        f.write(self.swmmTable('SUBAREAS'))
 #        f.write(self.swmmTable('INFILTRATION'))
+#        f.write(self.swmmTable('POLYGONS'))
         
-        
-        f.write(self.copy_parameters_from_template('LID_CONTROLS'))
-        f.write(self.copy_parameters_from_template('LID_USAGE'))
-        f.write(self.copy_parameters_from_template('AQUIFERS'))
-        f.write(self.copy_parameters_from_template('GROUNDWATER'))
-        f.write(self.copy_parameters_from_template('SNOWPACKS'))
-        
-#        f.write(self.swmmTable('JUNCTIONS'))
-#        f.write(self.swmmTable('OUTFALLS'))
-#        f.write(self.swmmTable('DIVIDERS'))
-#        f.write(self.swmmTable('STORAGE'))
+#        f.write(self.copy_parameters_from_template('LID_CONTROLS'))
+#        f.write(self.copy_parameters_from_template('LID_USAGE'))
+#        f.write(self.copy_parameters_from_template('AQUIFERS'))
+#        f.write(self.copy_parameters_from_template('GROUNDWATER'))
+#        f.write(self.copy_parameters_from_template('SNOWPACKS'))
+        # NODES
+        f.write(self.swmmTable('JUNCTIONS'))
+        f.write(self.swmmTable('OUTFALLS'))
+        f.write(self.swmmTable('DIVIDERS'))
+        f.write(self.swmmTable('STORAGE'))
+        # LINKS
 #        f.write(self.swmmTable('CONDUITS'))
 #        f.write(self.swmmTable('PUMPS'))
 #        f.write(self.swmmTable('ORIFICES'))
@@ -147,22 +156,25 @@ class qgep_swmm:
 #        f.write(self.swmmTable('OUTLETS'))
 #        f.write(self.swmmTable('XSECTIONS'))
 #        f.write(self.swmmTable('LOSSES'))
+#        f.write(self.swmmTable('COORDINATES'))
+#        f.write(self.swmmTable('VERTICES'))
         
-        f.write(self.copy_parameters_from_template('TRANSECTS'))
-        f.write(self.copy_parameters_from_template('CONTROLS'))
-        f.write(self.copy_parameters_from_template('POLLUTANTS'))
-        f.write(self.copy_parameters_from_template('LANDUSES'))
-        f.write(self.copy_parameters_from_template('COVERAGES'))
-        f.write(self.copy_parameters_from_template('BUILDUP'))
-        f.write(self.copy_parameters_from_template('WASHOFF'))
-        f.write(self.copy_parameters_from_template('TREATMENT'))
-        f.write(self.copy_parameters_from_template('INFLOWS'))
-        f.write(self.copy_parameters_from_template('DWF'))
-        f.write(self.copy_parameters_from_template('PATTERNS'))
-        f.write(self.copy_parameters_from_template('RDII'))
-        f.write(self.copy_parameters_from_template('LOADINGS'))
-        f.write(self.copy_parameters_from_template('CURVES'))
-        f.write(self.copy_parameters_from_template('TIMESERIES'))
+        
+#        f.write(self.copy_parameters_from_template('TRANSECTS'))
+#        f.write(self.copy_parameters_from_template('CONTROLS'))
+#        f.write(self.copy_parameters_from_template('POLLUTANTS'))
+#        f.write(self.copy_parameters_from_template('LANDUSES'))
+#        f.write(self.copy_parameters_from_template('COVERAGES'))
+#        f.write(self.copy_parameters_from_template('BUILDUP'))
+#        f.write(self.copy_parameters_from_template('WASHOFF'))
+#        f.write(self.copy_parameters_from_template('TREATMENT'))
+#        f.write(self.copy_parameters_from_template('INFLOWS'))
+#        f.write(self.copy_parameters_from_template('DWF'))
+#        f.write(self.copy_parameters_from_template('PATTERNS'))
+#        f.write(self.copy_parameters_from_template('RDII'))
+#        f.write(self.copy_parameters_from_template('LOADINGS'))
+#        f.write(self.copy_parameters_from_template('CURVES'))
+#        f.write(self.copy_parameters_from_template('TIMESERIES'))
         
         
         # currently not used 
@@ -213,8 +225,12 @@ class qgep_swmm:
     #    f.write(self.swmmTable(self.CURVES))
     #    f.write(self.swmmTable(self.TIMESERIES))
         f.close()
+        del f
         
         return
-    
+
+PATH2SCHEMA = 'S:/2_INTERNE_SION/0_COLLABORATEURS/PRODUIT_Timothee/02_work/qgep_swmm/scripts/install_swmm_views.bat'
+subprocess.call([PATH2SCHEMA])   
 qs = qgep_swmm()
 qs.write_input()
+print ('done')

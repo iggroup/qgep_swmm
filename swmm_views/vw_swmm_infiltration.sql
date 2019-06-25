@@ -8,7 +8,7 @@ DROP VIEW IF EXISTS qgep_swmm.vw_infiltration;
 CREATE OR REPLACE VIEW qgep_swmm.vw_infiltration AS
 
 SELECT 
-	ca.obj_id as Subcatchment,
+	replace(ca.obj_id, ' ', '_')  as Subcatchment,
 	3 as MaxRate,
 	0.5 as MinRate,
 	4 as Decay,
