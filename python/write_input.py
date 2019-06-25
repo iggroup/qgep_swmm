@@ -19,7 +19,7 @@ class qgep_swmm:
         # Connects to service and get data and attributes from tableName
         con = psycopg2.connect(service=self.service)
         cur = con.cursor()
-        cur.execute('select * from %s' %tableName)
+        cur.execute('select * from qgep_swmm.%s' %tableName)
         data = cur.fetchall()
         attributes = [desc[0] for desc in cur.description]
         
@@ -32,23 +32,27 @@ class qgep_swmm:
         # Create commented line which contains the field names
         fields = ""
         data, attributes = self.getSwmmTable(tableName)
-        for i,field in enumerate(attributes): 
-            fields+=field +"\t"
+        for i,field in enumerate(attributes):
+            # Does not write values stored in columns descriptions, tags and geom
+            if field not in ('description', 'tag', 'geom'):
+                fields+=field +"\t"
         
         # Create input paragraph
         tbl =u'['+tableName+']\n'\
             ';'+fields+'\n'
         for feature in data:
             for i, v in enumerate(feature):
-                if str(v) != 'None':
-                    m = re.search('^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d:\d\d):\d\d',str(v)) # for date and time saved as timestamps
-        
-                    if m:
-                        tbl += '/'.join(m.group(2,3,1))+'\t'+m.group(4)+'\t'
-                    else:
-                        tbl += str(v)+'\t'
-                else: 
-                    tbl += '\t'
+                # Does not write values stored in columns descriptions, tags and geom
+                if attributes[i] not in ('description', 'tag', 'geom'):
+                    if str(v) != 'None':
+                        m = re.search('^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d:\d\d):\d\d',str(v)) # for date and time saved as timestamps
+            
+                        if m:
+                            tbl += '/'.join(m.group(2,3,1))+'\t'+m.group(4)+'\t'
+                        else:
+                            tbl += str(v)+'\t'
+                    else: 
+                        tbl += '\t'
             tbl += '\n'
         tbl += '\n'
         return tbl;
@@ -121,10 +125,11 @@ class qgep_swmm:
         f.write(self.copy_parameters_from_template('EVAPORATION'))
         f.write(self.copy_parameters_from_template('TEMPERATURE'))
         
-#        f.write(self.swmmTable('SUBCATCHMENTS'))
+        f.write(self.swmmTable('SUBCATCHMENTS'))
 #        f.write(self.swmmTable('SUBAREAS'))
+#        f.write(self.swmmTable('INFILTRATION'))
         
-        f.write(self.copy_parameters_from_template('INFILTRATION'))
+        
         f.write(self.copy_parameters_from_template('LID_CONTROLS'))
         f.write(self.copy_parameters_from_template('LID_USAGE'))
         f.write(self.copy_parameters_from_template('AQUIFERS'))

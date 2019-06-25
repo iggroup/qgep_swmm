@@ -18,8 +18,6 @@ SELECT
 	0.5 as percSlope,
 	0 as CurbLen,
 	NULL as SnowPack,
-	st_x(st_centroid(perimeter_geometry)) as X_coordinate,
-	st_y(st_centroid(perimeter_geometry)) as Y_coordinate,
 	ca.identifier as description,
 	'catchment_area'::varchar as tag,
 	ST_Simplify(ST_CurveToLine(perimeter_geometry), 20, TRUE) as geom
