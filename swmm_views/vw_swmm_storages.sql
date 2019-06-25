@@ -10,13 +10,23 @@ CREATE OR REPLACE VIEW qgep_swmm.vw_storages AS
 
 SELECT
 	ss.obj_id as Name,
-	st_x(wn.situation_geometry) as X_coordinate,
-	st_y(wn.situation_geometry) as Y_coordinate,
+	wn.bottom_level as InvertElev,
+	(co.level-wn.bottom_level) as MaxDepth,
+	0 as InitDepth,
+	'FUNCTIONAL' as Shape,
+	1000 as CurveCoefficientOrCurveName, -- curve coefficient if FONCTIONAL curve name if TABULAR
+	0 as CurveExponent, -- if FONCTIONAL
+	0 as CurveConstant, -- if FONCTIONAL
+	0 as SurchargeDepth,
+	0 as Fevap,
+	NULL as Psi,
+	NULL as Ksat, -- conductivity
+	NULL as IMD,	
+	--st_x(wn.situation_geometry) as X_coordinate,
+	--st_y(wn.situation_geometry) as Y_coordinate,
 	ws.identifier as description,
 	'special_structure' as tag,
-	wn.bottom_level as invert_elev,
-	(co.level-wn.bottom_level) as max_depth,
-	NULL as ksat -- conductivity 	
+	wn.situation_geometry as geom
 FROM qgep_od.special_structure ss
 LEFT JOIN qgep_od.wastewater_structure ws ON ws.obj_id::text = ss.obj_id::text
 LEFT JOIN qgep_od.wastewater_networkelement we ON we.fk_wastewater_structure::text = ws.obj_id::text
@@ -57,13 +67,23 @@ WHERE ss.function IN (
 UNION ALL
 SELECT
 	ii.obj_id as Name,
-	st_x(wn.situation_geometry) as X_coordinate,
-	st_y(wn.situation_geometry) as Y_coordinate,
+	wn.bottom_level as InvertElev,
+	(ii.upper_elevation-wn.bottom_level) as MaxDepth,
+	0 as InitDepth,
+	'FUNCTIONAL' as Shape,
+	1000 as CurveCoefficientOrCurveName, -- curve coefficient if FONCTIONAL curve name if TABULAR
+	0 as CurveExponent, -- if FONCTIONAL
+	0 as CurveConstant, -- if FONCTIONAL
+	0 as SurchargeDepth,
+	0 as Fevap,
+	NULL as Psi,
+	(((absorption_capacity * 60 * 60) / 1000) / effective_area) * 1000 as Ksat, -- conductivity (liter/s * 60 * 60) -> liter/h, (liter/h / 1000)	-> m3/h,  (m/h *1000) -> mm/h 
+	NULL as IMD, 	
+	--st_x(wn.situation_geometry) as X_coordinate,
+	--st_y(wn.situation_geometry) as Y_coordinate,
 	ws.identifier as description,
 	'infiltration_installation' as tag,
-	wn.bottom_level as invert_elev,
-	(ii.upper_elevation-wn.bottom_level) as max_depth,
-	(((absorption_capacity * 60 * 60) / 1000) / effective_area) * 1000 as ksat -- conductivity (liter/s * 60 * 60) -> liter/h, (liter/h / 1000)	-> m3/h,  (m/h *1000) -> mm/h
+	wn.situation_geometry as geom
 FROM qgep_od.infiltration_installation as ii
 LEFT JOIN qgep_od.wastewater_structure ws ON ws.obj_id::text = ii.obj_id::text
 LEFT JOIN qgep_od.wastewater_networkelement we ON we.fk_wastewater_structure::text = ws.obj_id::text

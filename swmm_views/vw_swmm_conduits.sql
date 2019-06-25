@@ -9,20 +9,25 @@ DROP VIEW IF EXISTS qgep_swmm.vw_conduits;
 CREATE OR REPLACE VIEW qgep_swmm.vw_conduits AS
 
 SELECT
-	re.obj_id as name,
-	rp_from.obj_id as inlet_node, -- is it the same as the junctions, dividers, outfalls, storages names?
-	rp_to.obj_id as outlet_node,
+	re.obj_id as Name,
+	rp_from.obj_id as FromNode, -- is it the same as the junctions, dividers, outfalls, storages names?
+	rp_to.obj_id as ToNode,
+	re.length_effective as Length,
+	re.wall_roughness as Roughness,
+	(rp_from.level-from_wn.bottom_level) as InletOffset,
+	(rp_to.level-to_wn.bottom_level) as OutletOffset,
+	0 as InitFlow,
+	0 as MaxFlow,
 	ne.identifier as description,
 	ne.remark as tag,
-	(rp_from.level-from_wn.bottom_level) as inlet_offset,
-	(rp_to.level-to_wn.bottom_level) as outlet_offset,
+	-- for section xsection
 	re.fk_pipe_profile as xsection,
+	-- for section losses
 	CASE
 		WHEN ts.obj_id is not null THEN 'YES'
 		ELSE 'NO' 
 	END as flap_gate,
-	re.length_effective as length,
-	re.wall_roughness as roughness
+	ST_Simplify(ST_CurveToLine(progression_geometry), 20, TRUE) as geom
 FROM qgep_od.reach as re
 LEFT JOIN qgep_od.wastewater_networkelement ne ON ne.obj_id::text = re.obj_id::text
 LEFT JOIN qgep_od.reach_point rp_from ON rp_from.obj_id::text = re.fk_reach_point_from::text

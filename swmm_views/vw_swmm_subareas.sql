@@ -1,4 +1,4 @@
-DROP VIEW IF EXISTS qgep_swmm.vw_subcatchment;
+DROP VIEW IF EXISTS qgep_swmm.vw_subareas;
 
 
 --------
@@ -10,14 +10,17 @@ DROP VIEW IF EXISTS qgep_swmm.vw_subcatchment;
 -- -> outlet node is the water node at the end of the reach going out of the pump
 --------
 
-CREATE OR REPLACE VIEW qgep_swmm.vw_subcatchment AS
+CREATE OR REPLACE VIEW qgep_swmm.vw_subareas AS
 
 SELECT 
-	ca.obj_id as Name,
-	st_x(st_centroid(perimeter_geometry)) as X_coordinate,
-	st_y(st_centroid(perimeter_geometry)) as Y_coordinate,
+	ca.obj_id as Subcatchment,
+	0.01 as NImperv,
+	0.1 as NPerv,
+	0.05 as SImperv,
+	0.05 as SPerv,
+	25 as PctZero,
+	'OUTLET'::varchar as RouteTo,
+	NULL::float as PctRouted,
 	ca.identifier as description,
-	'catchment_area'::varchar as tag,
-	fk_wastewater_networkelement_ww_current as outlet, -- name of node or another subcatchement that receives runoff
-	surface_area as area
+	'catchment_area'::varchar as tag
 FROM qgep_od.catchment_area as ca

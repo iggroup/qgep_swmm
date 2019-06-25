@@ -12,13 +12,19 @@ CREATE OR REPLACE VIEW qgep_swmm.vw_dividers AS
 
 SELECT
 	ma.obj_id as Name,
-	st_x(wn.situation_geometry) as X_coordinate,
-	st_y(wn.situation_geometry) as Y_coordinate,
+	wn.bottom_level as InvertElevation,
+	'*' as DivertedLink ,
+	'CUTOFF' as Type,
+	0 as CutoffFlow,
+	(co.level-wn.bottom_level) as MaxDepth,
+	0 as InitDepth,
+	0 as SurchargeDepth,
+	0 as PondedArea,
+	--st_x(wn.situation_geometry) as X_coordinate,
+	--st_y(wn.situation_geometry) as Y_coordinate,
 	ws.identifier as description,
 	'manhole' as tag,
-	wn.bottom_level as invert_elev,
-	(co.level-wn.bottom_level) as max_depth,
-	'???' as diverted_link
+	wn.situation_geometry as geom
 FROM qgep_od.manhole ma
 LEFT JOIN qgep_od.wastewater_structure ws ON ws.obj_id::text = ma.obj_id::text
 LEFT JOIN qgep_od.wastewater_networkelement we ON we.fk_wastewater_structure::text = ws.obj_id::text
@@ -30,13 +36,19 @@ UNION ALL
 
 SELECT
 	ss.obj_id as Name,
-	st_x(wn.situation_geometry) as X_coordinate,
-	st_y(wn.situation_geometry) as Y_coordinate,
+	wn.bottom_level as InvertElevation,
+	'*' as DivertedLink,
+	'CUTOFF' as Type,
+	0 as CutoffFlow,
+	(co.level-wn.bottom_level) as MaxDepth,
+	0 as InitDepth,
+	0 as SurchargeDepth,
+	0 as PondedArea,
+	--st_x(wn.situation_geometry) as X_coordinate,
+	--st_y(wn.situation_geometry) as Y_coordinate,
 	ws.identifier as description,
 	'special_stucture' as tag,
-	wn.bottom_level as invert_elev,
-	(co.level-wn.bottom_level) as max_depth,
-	'???' as diverted_link
+	wn.situation_geometry as geom
 FROM qgep_od.special_structure ss
 LEFT JOIN qgep_od.wastewater_structure ws ON ws.obj_id::text = ss.obj_id::text
 LEFT JOIN qgep_od.wastewater_networkelement we ON we.fk_wastewater_structure::text = ws.obj_id::text

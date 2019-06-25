@@ -8,6 +8,7 @@ import codecs
 class qgep_swmm:
     
     def __init__(self):
+        self.title = 'title simulation'
         self.service = 'pg_qgep_demo_data'
         self.input_file = 'S:\\2_INTERNE_SION\\0_COLLABORATEURS\\PRODUIT_Timothee\\02_work\\qgep_swmm\\input\\qgep_swmm.inp'
         self.options_template_file = 'S:\\2_INTERNE_SION\\0_COLLABORATEURS\\PRODUIT_Timothee\\02_work\\qgep_swmm\\simulation_parameters\\example1.inp'
@@ -85,23 +86,21 @@ class qgep_swmm:
         indexStart = options_template.find('[%s]' %parameter_name)
         if indexStart == -1:
             # The balise options is not found
-            print ('There is no [OPTIONS] in the template file')
+            print ('There is no [%s] in the template file' %parameter_name)
             return ''
         else:
             # Search for the next opening bracket
             indexStop = options_template[indexStart+1:].find('[')
             if indexStop == -1:
                 # Copies text until the end of the file
-                indexStop = options_template.length()
+                indexStop = len(options_template)
             else:
-                indexStop = indexStart+1+indexStop
-            print (indexStart, indexStop)    
+                indexStop = indexStart+1+indexStop  
             optionText = options_template[indexStart:indexStop]
-            print (optionText)
             return optionText
                 
         
-    def write_input(self, title):
+    def write_input(self):
     
         
         
@@ -110,13 +109,63 @@ class qgep_swmm:
         filename = self.input_file
         f = codecs.open(filename, 'w',encoding='utf-8')
         f.write('[TITLE]\n')
-        f.write(title+'\n\n')
+        f.write(self.title+'\n\n')
         
         # Copies options from template 
         #-----------------------------
         f.write(self.copy_parameters_from_template('OPTIONS'))
+        f.write(self.copy_parameters_from_template('REPORT'))
+        f.write(self.copy_parameters_from_template('FILES'))
+        f.write(self.copy_parameters_from_template('RAINGAGES'))
+        f.write(self.copy_parameters_from_template('HYDROGRAPHS'))
+        f.write(self.copy_parameters_from_template('EVAPORATION'))
+        f.write(self.copy_parameters_from_template('TEMPERATURE'))
         
-        f.write(self.swmmTable('qgep_swmm.junctions_copy'))
+#        f.write(self.swmmTable('SUBCATCHMENTS'))
+#        f.write(self.swmmTable('SUBAREAS'))
+        
+        f.write(self.copy_parameters_from_template('INFILTRATION'))
+        f.write(self.copy_parameters_from_template('LID_CONTROLS'))
+        f.write(self.copy_parameters_from_template('LID_USAGE'))
+        f.write(self.copy_parameters_from_template('AQUIFERS'))
+        f.write(self.copy_parameters_from_template('GROUNDWATER'))
+        f.write(self.copy_parameters_from_template('SNOWPACKS'))
+        
+#        f.write(self.swmmTable('JUNCTIONS'))
+#        f.write(self.swmmTable('OUTFALLS'))
+#        f.write(self.swmmTable('DIVIDERS'))
+#        f.write(self.swmmTable('STORAGE'))
+#        f.write(self.swmmTable('CONDUITS'))
+#        f.write(self.swmmTable('PUMPS'))
+#        f.write(self.swmmTable('ORIFICES'))
+#        f.write(self.swmmTable('WEIRS'))
+#        f.write(self.swmmTable('OUTLETS'))
+#        f.write(self.swmmTable('XSECTIONS'))
+#        f.write(self.swmmTable('LOSSES'))
+        
+        f.write(self.copy_parameters_from_template('TRANSECTS'))
+        f.write(self.copy_parameters_from_template('CONTROLS'))
+        f.write(self.copy_parameters_from_template('POLLUTANTS'))
+        f.write(self.copy_parameters_from_template('LANDUSES'))
+        f.write(self.copy_parameters_from_template('COVERAGES'))
+        f.write(self.copy_parameters_from_template('BUILDUP'))
+        f.write(self.copy_parameters_from_template('WASHOFF'))
+        f.write(self.copy_parameters_from_template('TREATMENT'))
+        f.write(self.copy_parameters_from_template('INFLOWS'))
+        f.write(self.copy_parameters_from_template('DWF'))
+        f.write(self.copy_parameters_from_template('PATTERNS'))
+        f.write(self.copy_parameters_from_template('RDII'))
+        f.write(self.copy_parameters_from_template('LOADINGS'))
+        f.write(self.copy_parameters_from_template('CURVES'))
+        f.write(self.copy_parameters_from_template('TIMESERIES'))
+        
+        
+        # currently not used 
+        # f.write(self.swmmTable('TAGS'))
+
+        
+        
+        # f.write(self.swmmTable('qgep_swmm.junctions_copy'))
     #    f.write(self.swmmKeyVal(self.OPTIONS, self.getParameterValue(self.TITLE)))
     #    f.write(self.swmmKeyVal(self.REPORT,self.getParameterValue(self.TITLE)))
     #    f.write(self.swmmTable(self.FILES))
@@ -163,4 +212,4 @@ class qgep_swmm:
         return
     
 qs = qgep_swmm()
-qs.write_input('blib')
+qs.write_input()

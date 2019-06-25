@@ -11,12 +11,16 @@ CREATE OR REPLACE VIEW qgep_swmm.vw_junctions AS
 -- manholes
 SELECT
 	ma.obj_id as Name,
-	st_x(wn.situation_geometry) as X_coordinate,
-	st_y(wn.situation_geometry) as Y_coordinate,
+	wn.bottom_level as InvertElev,
+	(co.level-wn.bottom_level) as MaxDepth,
+	NULL::float as InitDepth,
+	NULL::float as SurchargeDepth,
+	NULL::float as PondedArea,
+	-- st_x(wn.situation_geometry) as X_coordinate,
+	-- st_y(wn.situation_geometry) as Y_coordinate,
 	ws.identifier as description,
 	'manhole' as tag,
-	wn.bottom_level as InvertElev,
-	(co.level-wn.bottom_level) as MaxDepth
+	wn.situation_geometry as geom
 FROM qgep_od.manhole ma
 LEFT JOIN qgep_od.wastewater_structure ws ON ws.obj_id::text = ma.obj_id::text
 LEFT JOIN qgep_od.wastewater_networkelement we ON we.fk_wastewater_structure::text = ws.obj_id::text
@@ -29,12 +33,16 @@ UNION ALL
 -- special structures
 SELECT
 	ss.obj_id as Name,
-	st_x(wn.situation_geometry) as X_coordinate,
-	st_y(wn.situation_geometry) as Y_coordinate,
+	wn.bottom_level as InvertElev,
+	(co.level-wn.bottom_level) as MaxDepth,
+	NULL::float as InitDepth,
+	NULL::float as SurchargeDepth,
+	NULL::float as PondedArea,
+	-- st_x(wn.situation_geometry) as X_coordinate,
+	-- st_y(wn.situation_geometry) as Y_coordinate,
 	ws.identifier as description,
 	'special_structure' as tag,
-	wn.bottom_level as invert_elev,
-	(co.level-wn.bottom_level) as MaxDepth
+	wn.situation_geometry as geom
 FROM qgep_od.special_structure ss
 LEFT JOIN qgep_od.wastewater_structure ws ON ws.obj_id::text = ss.obj_id::text
 LEFT JOIN qgep_od.wastewater_networkelement we ON we.fk_wastewater_structure::text = ws.obj_id::text
