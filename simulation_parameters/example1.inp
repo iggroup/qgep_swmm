@@ -121,18 +121,22 @@ OffLine         	FLOW            	INFLOW@82309    	FLOW    	1.0     	1.0
 [CURVES]
 ;Name          	Type      	X-Value   	Y-Value   
 ;--------------	----------	----------	----------
-PUMPCURVEforPUMP1@82309-15009	Pump1     	0         	5.0       
+default_pump_curve	Pump1     	0         	5.0       
 PUMPCURVEforPUMP1@82309-15009	          	25.0      	10.0      
 PUMPCURVEforPUMP1@82309-15009	          	600       	20.0      
+
+[RAINGAGES]
+;;Name	Format	Interval	SCF	Source
+default_qgep_raingage	INTENSITY	1:00	1.0	TIMESERIES default_qgep_raingage_timeserie
 
 [TIMESERIES]
 ;Name          	Date      	Time      	Value     
 ;--------------	----------	----------	----------
-INFLOW@82309    	01/01/1988	00:00     	0.00000   
-INFLOW@82309    	          	00:15     	40.00000  
-INFLOW@82309    	          	03:00     	40.00000  
-INFLOW@82309    	          	03:15     	0.00000   
-INFLOW@82309    	          	12:00     	0.00000   
+default_qgep_raingage_timeserie    	01/01/2000	00:00     	0.00000   
+default_qgep_raingage_timeserie    	          	00:15     	40.00000  
+default_qgep_raingage_timeserie    	          	03:00     	40.00000  
+default_qgep_raingage_timeserie    	          	03:15     	0.00000   
+default_qgep_raingage_timeserie    	          	12:00     	0.00000   
 
 INFLOW@80408    	01/01/1988	00:00     	0.00000   
 INFLOW@80408    	          	00:15     	45.00000  

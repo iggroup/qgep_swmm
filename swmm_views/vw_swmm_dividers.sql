@@ -11,9 +11,9 @@ DROP VIEW IF EXISTS qgep_swmm.vw_dividers;
 CREATE OR REPLACE VIEW qgep_swmm.vw_dividers AS
 
 SELECT
-	ma.obj_id as Name,
+	wn.obj_id as Name,
 	coalesce(wn.bottom_level,0) as InvertElevation,
-	'*' as DivertedLink ,
+	'default_qgep_diverted_link' as DivertedLink ,
 	'CUTOFF' as Type,
 	0 as CutoffFlow,
 	(co.level-wn.bottom_level) as MaxDepth,
@@ -23,7 +23,7 @@ SELECT
 	--st_x(wn.situation_geometry) as X_coordinate,
 	--st_y(wn.situation_geometry) as Y_coordinate,
 	ws.identifier as description,
-	'manhole' as tag,
+	ma.obj_id as tag,
 	wn.situation_geometry as geom
 FROM qgep_od.manhole ma
 LEFT JOIN qgep_od.wastewater_structure ws ON ws.obj_id::text = ma.obj_id::text
@@ -31,13 +31,14 @@ LEFT JOIN qgep_od.wastewater_networkelement we ON we.fk_wastewater_structure::te
 LEFT JOIN qgep_od.wastewater_node wn on wn.obj_id = we.obj_id
 LEFT JOIN qgep_od.cover co on ws.fk_main_cover = co.obj_id
 WHERE function = 4798 -- separating_structure
+AND wn.obj_id is not null
 
 UNION ALL
 
 SELECT
-	ss.obj_id as Name,
+	wn.obj_id as Name,
 	coalesce(wn.bottom_level,0) as InvertElevation,
-	'*' as DivertedLink,
+	'default_qgep_diverted_link' as DivertedLink,
 	'CUTOFF' as Type,
 	0 as CutoffFlow,
 	(co.level-wn.bottom_level) as MaxDepth,
@@ -47,7 +48,7 @@ SELECT
 	--st_x(wn.situation_geometry) as X_coordinate,
 	--st_y(wn.situation_geometry) as Y_coordinate,
 	ws.identifier as description,
-	'special_stucture' as tag,
+	ss.obj_id as tag,
 	wn.situation_geometry as geom
 FROM qgep_od.special_structure ss
 LEFT JOIN qgep_od.wastewater_structure ws ON ws.obj_id::text = ss.obj_id::text
@@ -55,3 +56,4 @@ LEFT JOIN qgep_od.wastewater_networkelement we ON we.fk_wastewater_structure::te
 LEFT JOIN qgep_od.wastewater_node wn on wn.obj_id = we.obj_id
 LEFT JOIN qgep_od.cover co on ws.fk_main_cover = co.obj_id
 WHERE function  = 4799 -- separating_structure
+AND wn.obj_id is not null

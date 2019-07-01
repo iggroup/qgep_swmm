@@ -9,9 +9,9 @@ DROP VIEW IF EXISTS qgep_swmm.vw_storages;
 CREATE OR REPLACE VIEW qgep_swmm.vw_storages AS
 
 SELECT
-	ss.obj_id as Name,
+	wn.obj_id as Name,
 	coalesce(wn.bottom_level,0) as InvertElev,
-	(co.level-wn.bottom_level) as MaxDepth,
+	coalesce((co.level-wn.bottom_level,0) as MaxDepth,
 	0 as InitDepth,
 	'FUNCTIONAL' as Shape,
 	1000 as CurveCoefficientOrCurveName, -- curve coefficient if FONCTIONAL curve name if TABULAR
@@ -25,14 +25,14 @@ SELECT
 	--st_x(wn.situation_geometry) as X_coordinate,
 	--st_y(wn.situation_geometry) as Y_coordinate,
 	ws.identifier as description,
-	'special_structure' as tag,
+	ss.obj_id as tag,
 	wn.situation_geometry as geom
 FROM qgep_od.special_structure ss
 LEFT JOIN qgep_od.wastewater_structure ws ON ws.obj_id::text = ss.obj_id::text
 LEFT JOIN qgep_od.wastewater_networkelement we ON we.fk_wastewater_structure::text = ws.obj_id::text
 LEFT JOIN qgep_od.wastewater_node wn on wn.obj_id = we.obj_id
 LEFT JOIN qgep_od.cover co on ws.fk_main_cover = co.obj_id
-WHERE ss.function IN (
+WHERE ss.function IN ( -- must be the same list in vw_swmm_junctions
 6397, --"pit_without_drain"
 -- 245, --"drop_structure"
 6398, --"hydrolizing_tank"
@@ -63,12 +63,12 @@ WHERE ss.function IN (
 -- 4799, --"separating_structure"
 -- 3008, --"unknown"
 -- 2745, --"vortex_manhole"
-) -- is list of function OK?
+)
 UNION ALL
 SELECT
-	ii.obj_id as Name,
+	wn.obj_id as Name,
 	coalesce(wn.bottom_level,0) as InvertElev,
-	(ii.upper_elevation-wn.bottom_level) as MaxDepth,
+	coalesce((ii.upper_elevation-wn.bottom_level),0) as MaxDepth,
 	0 as InitDepth,
 	'FUNCTIONAL' as Shape,
 	1000 as CurveCoefficientOrCurveName, -- curve coefficient if FONCTIONAL curve name if TABULAR
@@ -82,7 +82,7 @@ SELECT
 	--st_x(wn.situation_geometry) as X_coordinate,
 	--st_y(wn.situation_geometry) as Y_coordinate,
 	ws.identifier as description,
-	'infiltration_installation' as tag,
+	ii.obj_id as tag,
 	wn.situation_geometry as geom
 FROM qgep_od.infiltration_installation as ii
 LEFT JOIN qgep_od.wastewater_structure ws ON ws.obj_id::text = ii.obj_id::text

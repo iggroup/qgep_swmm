@@ -10,12 +10,8 @@ CREATE OR REPLACE VIEW qgep_swmm.vw_conduits AS
 
 SELECT
 	re.obj_id as Name,
-	--rp_from.obj_id as FromNode, -- is it the same as the junctions, dividers, outfalls, storages names?
-	--rp_to.obj_id as ToNode,
-	--from_wn.obj_id as FromNode, -- is it the same as the junctions, dividers, outfalls, storages names?
-	--to_wn.obj_id as ToNode,
-	coalesce(from_ne.fk_wastewater_structure, '?') as FromNode, -- is it the same as the junctions, dividers, outfalls, storages names?
-	coalesce(to_ne.fk_wastewater_structure, '?') as ToNode,
+	coalesce(from_wn.obj_id, 'default_qgep_node') as FromNode,
+	coalesce(to_wn.obj_id, 'default_qgep_node') as ToNode,
 	re.length_effective as Length,
 	coalesce(re.wall_roughness,0.01) as Roughness,
 	coalesce((rp_from.level-from_wn.bottom_level),0) as InletOffset,
@@ -23,7 +19,7 @@ SELECT
 	0 as InitFlow,
 	0 as MaxFlow,
 	ne.identifier as description,
-	ne.remark as tag,
+	null as tag,
 	-- for section xsection
 	--re.fk_pipe_profile as xsection,
 	-- for section losses

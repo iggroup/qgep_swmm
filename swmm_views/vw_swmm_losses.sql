@@ -18,7 +18,6 @@ SELECT DISTINCT
 		ELSE 'NO' 
 	END as flap_gate,
 	0::float as Seepage
-								
 FROM qgep_od.reach re
 LEFT JOIN qgep_od.wastewater_networkelement ne ON ne.obj_id::text = re.obj_id::text
 LEFT JOIN qgep_od.pipe_profile pp on pp.obj_id = re.fk_pipe_profile 

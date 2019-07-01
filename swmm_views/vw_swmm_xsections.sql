@@ -24,6 +24,6 @@ SELECT DISTINCT
 	0 as Geom3,
 	0 as Geom4,
 	1 as Barrels,
-	NULL as Culvert					
+	NULL as Culvert
 FROM qgep_od.reach re
 LEFT JOIN qgep_od.pipe_profile pp on pp.obj_id = re.fk_pipe_profile 

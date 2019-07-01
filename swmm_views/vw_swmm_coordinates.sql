@@ -13,6 +13,7 @@ SELECT
 	ROUND(ST_X(geom)::numeric,2) as X_Coord,
 	ROUND(ST_Y(geom)::numeric,2) as Y_Coord		
 FROM qgep_swmm.vw_junctions
+WHERE geom is not null
 
 UNION 
 
@@ -21,6 +22,7 @@ SELECT
 	ROUND(ST_X(geom)::numeric,2) as X_Coord,
 	ROUND(ST_Y(geom)::numeric,2) as Y_Coord		
 FROM qgep_swmm.vw_outfalls
+WHERE geom is not null
 
 UNION 
 
@@ -29,6 +31,7 @@ SELECT
 	ROUND(ST_X(geom)::numeric,2) as X_Coord,
 	ROUND(ST_Y(geom)::numeric,2) as Y_Coord		
 FROM qgep_swmm.vw_dividers
+WHERE geom is not null
 
 UNION 
 
@@ -37,3 +40,4 @@ SELECT
 	ROUND(ST_X(geom)::numeric,2) as X_Coord,
 	ROUND(ST_Y(geom)::numeric,2) as Y_Coord		
 FROM qgep_swmm.vw_storages
+WHERE geom is not null

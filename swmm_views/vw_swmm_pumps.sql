@@ -16,11 +16,11 @@ SELECT
 	pu.obj_id as Name,
 	overflow.fk_wastewater_node as FromNode, -- inlet is the waternode entering the pump
 	overflow.fk_overflow_to as ToNode, -- outlet is the waternode at the top of next reach
-	'*'::varchar as PumpCurve,
+	'default_qgep_pump_curve'::varchar as PumpCurve,
 	'ON'::varchar as Status,
 	pu.start_level as StartupDepth,
 	pu.stop_level as ShutoffDepth,
 	overflow.identifier as description,
-	'pump'::varchar as tag	
+	pu.obj_id::varchar as tag	
 FROM qgep_od.pump pu
 JOIN qgep_od.overflow overflow ON pu.obj_id::text = overflow.obj_id::text;

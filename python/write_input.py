@@ -12,7 +12,7 @@ class qgep_swmm:
         self.title = 'title simulation'
         self.service = 'pg_qgep_demo_data'
         self.input_file = 'S:\\2_INTERNE_SION\\0_COLLABORATEURS\\PRODUIT_Timothee\\02_work\\qgep_swmm\\input\\qgep_swmm.inp'
-        self.options_template_file = 'S:\\2_INTERNE_SION\\0_COLLABORATEURS\\PRODUIT_Timothee\\02_work\\qgep_swmm\\simulation_parameters\\example1.inp'
+        self.options_template_file = 'S:\\2_INTERNE_SION\\0_COLLABORATEURS\\PRODUIT_Timothee\\02_work\\qgep_swmm\\simulation_parameters\\default_qgep_swmm_parameters.inp'#default_qgep_swmm_parameters
         self.output_file = ''
 
     def getSwmmTable(self, tableName):
@@ -106,16 +106,15 @@ class qgep_swmm:
             if indexStop == -1:
                 # Copies text until the end of the file
                 indexStop = len(options_template)
+                optionText = options_template[indexStart:indexStop]+'\n\n'
             else:
                 indexStop = indexStart+1+indexStop  
-            optionText = options_template[indexStart:indexStop]
+                optionText = options_template[indexStart:indexStop]
             return optionText
                 
         
     def write_input(self):
     
-        
-        
         # From qgis swmm
         print (self.input_file)
         filename = self.input_file
@@ -133,48 +132,51 @@ class qgep_swmm:
         f.write(self.copy_parameters_from_template('EVAPORATION'))
         f.write(self.copy_parameters_from_template('TEMPERATURE'))
         
-#        f.write(self.swmmTable('SUBCATCHMENTS'))
-#        f.write(self.swmmTable('SUBAREAS'))
-#        f.write(self.swmmTable('INFILTRATION'))
-#        f.write(self.swmmTable('POLYGONS'))
+        f.write(self.swmmTable('SUBCATCHMENTS'))
+        f.write(self.swmmTable('SUBAREAS'))
+        f.write(self.swmmTable('INFILTRATION'))
+        f.write(self.swmmTable('POLYGONS'))
         
-#        f.write(self.copy_parameters_from_template('LID_CONTROLS'))
-#        f.write(self.copy_parameters_from_template('LID_USAGE'))
-#        f.write(self.copy_parameters_from_template('AQUIFERS'))
-#        f.write(self.copy_parameters_from_template('GROUNDWATER'))
-#        f.write(self.copy_parameters_from_template('SNOWPACKS'))
+        f.write(self.copy_parameters_from_template('LID_CONTROLS'))
+        f.write(self.copy_parameters_from_template('LID_USAGE'))
+        f.write(self.copy_parameters_from_template('AQUIFERS'))
+        f.write(self.copy_parameters_from_template('GROUNDWATER'))
+        f.write(self.copy_parameters_from_template('SNOWPACKS'))
+        
         # NODES
         f.write(self.swmmTable('JUNCTIONS'))
+        # Create default junction to avoid error
+        f.write('default_qgep_node\t0\t0\n\n')
         f.write(self.swmmTable('OUTFALLS'))
         f.write(self.swmmTable('DIVIDERS'))
         f.write(self.swmmTable('STORAGE'))
+        f.write(self.swmmTable('COORDINATES'))
+        
         # LINKS
-#        f.write(self.swmmTable('CONDUITS'))
-#        f.write(self.swmmTable('PUMPS'))
-#        f.write(self.swmmTable('ORIFICES'))
-#        f.write(self.swmmTable('WEIRS'))
-#        f.write(self.swmmTable('OUTLETS'))
-#        f.write(self.swmmTable('XSECTIONS'))
-#        f.write(self.swmmTable('LOSSES'))
-#        f.write(self.swmmTable('COORDINATES'))
-#        f.write(self.swmmTable('VERTICES'))
+        f.write(self.swmmTable('CONDUITS'))
+        f.write(self.swmmTable('PUMPS'))
+        f.write(self.swmmTable('ORIFICES'))
+        f.write(self.swmmTable('WEIRS'))
+        f.write(self.swmmTable('OUTLETS'))
+        f.write(self.swmmTable('XSECTIONS'))
+        f.write(self.swmmTable('LOSSES'))
+        f.write(self.swmmTable('VERTICES'))
         
-        
-#        f.write(self.copy_parameters_from_template('TRANSECTS'))
-#        f.write(self.copy_parameters_from_template('CONTROLS'))
-#        f.write(self.copy_parameters_from_template('POLLUTANTS'))
-#        f.write(self.copy_parameters_from_template('LANDUSES'))
-#        f.write(self.copy_parameters_from_template('COVERAGES'))
-#        f.write(self.copy_parameters_from_template('BUILDUP'))
-#        f.write(self.copy_parameters_from_template('WASHOFF'))
-#        f.write(self.copy_parameters_from_template('TREATMENT'))
-#        f.write(self.copy_parameters_from_template('INFLOWS'))
-#        f.write(self.copy_parameters_from_template('DWF'))
-#        f.write(self.copy_parameters_from_template('PATTERNS'))
-#        f.write(self.copy_parameters_from_template('RDII'))
-#        f.write(self.copy_parameters_from_template('LOADINGS'))
-#        f.write(self.copy_parameters_from_template('CURVES'))
-#        f.write(self.copy_parameters_from_template('TIMESERIES'))
+        f.write(self.copy_parameters_from_template('TRANSECTS'))
+        f.write(self.copy_parameters_from_template('CONTROLS'))
+        f.write(self.copy_parameters_from_template('POLLUTANTS'))
+        f.write(self.copy_parameters_from_template('LANDUSES'))
+        f.write(self.copy_parameters_from_template('COVERAGES'))
+        f.write(self.copy_parameters_from_template('BUILDUP'))
+        f.write(self.copy_parameters_from_template('WASHOFF'))
+        f.write(self.copy_parameters_from_template('TREATMENT'))
+        f.write(self.copy_parameters_from_template('INFLOWS'))
+        f.write(self.copy_parameters_from_template('DWF'))
+        f.write(self.copy_parameters_from_template('PATTERNS'))
+        f.write(self.copy_parameters_from_template('RDII'))
+        f.write(self.copy_parameters_from_template('LOADINGS'))
+        f.write(self.copy_parameters_from_template('CURVES'))
+        f.write(self.copy_parameters_from_template('TIMESERIES'))
         
         
         # currently not used 
