@@ -48,6 +48,13 @@ class qgep_swmm:
                 ';;'+fields+'\n'
             for feature in data:
                 for i, v in enumerate(feature):
+                    # Write description
+                    if attributes[i] == 'description' and str(v) != 'None':
+                        tbl += ';'
+                        tbl += str(v)
+                        tbl += '\n'
+
+                for i, v in enumerate(feature):
                     # Does not write values stored in columns descriptions, tags and geom
                     if attributes[i] not in ('description', 'tag', 'geom'):
                         if str(v) != 'None':
@@ -179,54 +186,8 @@ class qgep_swmm:
         f.write(self.copy_parameters_from_template('CURVES'))
         f.write(self.copy_parameters_from_template('TIMESERIES'))
         
-        
-        # currently not used 
-        # f.write(self.swmmTable('TAGS'))
+        f.write(self.swmmTable('TAGS'))
 
-        
-        
-        # f.write(self.swmmTable('qgep_swmm.junctions_copy'))
-    #    f.write(self.swmmKeyVal(self.OPTIONS, self.getParameterValue(self.TITLE)))
-    #    f.write(self.swmmKeyVal(self.REPORT,self.getParameterValue(self.TITLE)))
-    #    f.write(self.swmmTable(self.FILES))
-    #    f.write(self.swmmTable(self.RAINGAGES))
-    #    f.write(self.swmmTable(self.HYDROGRAPHS))
-    #    f.write(self.swmmKeyVal(self.EVAPORATION, self.getParameterValue(self.TITLE)))
-    #    f.write(self.swmmTable(self.TEMPERATURE))
-    #    f.write(self.swmmTable(self.SUBCATCHMENTS))
-    #    f.write(self.swmmTable(self.SUBAREAS))
-    #    f.write(self.swmmTable(self.INFILTRATION))
-    #    f.write(self.swmmTable(self.LID_CONTROLS))
-    #    f.write(self.swmmTable(self.LID_USAGE))
-    #    f.write(self.swmmTable(self.AQUIFERS))
-    #    f.write(self.swmmTable(self.GROUNDWATER))
-    #    f.write(self.swmmTable(self.SNOWPACKS))
-    #    f.write(self.swmmTable(self.JUNCTIONS))
-    #    f.write(self.swmmTable(self.OUTFALLS))
-    #    f.write(self.swmmTable(self.DIVIDERS))
-    #    f.write(self.swmmTable(self.STORAGE))
-    #    f.write(self.swmmTable(self.CONDUITS))
-    #    f.write(self.swmmTable(self.PUMPS))
-    #    f.write(self.swmmTable(self.ORIFICES))
-    #    f.write(self.swmmTable(self.WEIRS))
-    #    f.write(self.swmmTable(self.OUTLETS))
-    #    f.write(self.swmmTable(self.XSECTIONS))
-    #    f.write(self.swmmTable(self.TRANSECTS))
-    #    f.write(self.swmmTable(self.LOSSES))
-    #    f.write(self.swmmTable(self.CONTROLS))
-    #    f.write(self.swmmTable(self.POLLUTANTS))
-    #    f.write(self.swmmTable(self.LANDUSES))
-    #    f.write(self.swmmTable(self.COVERAGES))
-    #    f.write(self.swmmTable(self.BUILDUP))
-    #    f.write(self.swmmTable(self.WASHOFF))
-    #    f.write(self.swmmTable(self.TREATMENT))
-    #    f.write(self.swmmTable(self.INFLOWS))
-    #    f.write(self.swmmTable(self.DWF))
-    #    f.write(self.swmmTable(self.PATTERNS))
-    #    f.write(self.swmmTable(self.RDII))
-    #    f.write(self.swmmTable(self.LOADINGS))
-    #    f.write(self.swmmTable(self.CURVES))
-    #    f.write(self.swmmTable(self.TIMESERIES))
         f.close()
         del f
         

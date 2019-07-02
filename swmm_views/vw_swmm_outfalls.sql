@@ -17,7 +17,7 @@ SELECT
 	NULL::varchar as RouteTo,
 	--st_x(wn.situation_geometry) as X_coordinate,
 	--st_y(wn.situation_geometry) as Y_coordinate,
-	ws.identifier as description,
+	ws.identifier || ', ' || ws.remark as description,
 	dp.obj_id::varchar as tag,
 	wn.situation_geometry as geom
 FROM qgep_od.discharge_point as dp

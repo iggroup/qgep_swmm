@@ -73,4 +73,10 @@ Use the *lightning* button
 
 A negative number is provided for the depth => change the value in QGEP or in the .inp file.
 
+## Run current state simulation
+
+## Run aimed state simulation
+
+## Run variants (network is modified)
+
 ## Default values

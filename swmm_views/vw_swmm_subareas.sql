@@ -13,7 +13,7 @@ DROP VIEW IF EXISTS qgep_swmm.vw_subareas;
 CREATE OR REPLACE VIEW qgep_swmm.vw_subareas AS
 
 SELECT 
-	replace(ca.obj_id, ' ', '_')  as Subcatchment,
+	replace(ca.obj_id, ' ', '_') as Subcatchment,
 	0.01 as NImperv,
 	0.1 as NPerv,
 	0.05 as SImperv,
@@ -21,6 +21,6 @@ SELECT
 	25 as PctZero,
 	'OUTLET'::varchar as RouteTo,
 	NULL::float as PctRouted,
-	ca.identifier as description,
-	'catchment_area'::varchar as tag
+	ca.identifier || ', ' || ca.remark as description,
+	ca.obj_id::varchar as tag
 FROM qgep_od.catchment_area as ca

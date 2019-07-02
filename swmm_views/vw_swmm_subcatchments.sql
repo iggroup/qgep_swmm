@@ -18,7 +18,7 @@ SELECT
 	0.5 as percSlope,
 	0 as CurbLen,
 	NULL as SnowPack,
-	ca.identifier as description,
+	ca.identifier || ', ' || ca.remark as description,
 	ca.obj_id as tag,
 	ST_Simplify(ST_CurveToLine(perimeter_geometry), 5, TRUE) as geom
 FROM qgep_od.catchment_area as ca;
