@@ -30,7 +30,7 @@ CREATE OR REPLACE VIEW qgep_swmm.vw_raingages AS
 SELECT 
 	('raingage@' || replace(ca.obj_id, ' ', '_'))::varchar as Name,
 	'INTENSITY'::varchar as Format,
-	'1:00'::varchar as Interval,
+	'0:15'::varchar as Interval,
 	'1.0'::varchar as SCF,
 	'TIMESERIES default_qgep_raingage_timeserie'::varchar as Source,
 	st_centroid(perimeter_geometry) as geom

@@ -67,7 +67,7 @@ You have to solve the errors in the order they appear in the report. Some errors
 Use the *lightning* button
 
 ### Solve running errors
-E
+[Errors explanation](https://swmm5.org/2016/09/05/swmm-5-1-and-infoswmm-error-and-warning-messages/)
 
 `ERROR 211: invalid number -XXX at line XXX of [JUNC] section:`
 

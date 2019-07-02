@@ -30,32 +30,27 @@ LINK_OFFSETS        	DEPTH
 MIN_SLOPE           	0
 
 [EVAPORATION]
-;Type      	Parameters
-;----------	----------
+;;Type      	Parameters
+;;----------	----------
 CONSTANT    	0.0
 DRY_ONLY     NO
 
 [INFLOWS]
-;              	                	                	Param   	Units   	Scale   	Baseline	Baseline
-;Node          	Parameter       	Time Series     	Type    	Factor  	Factor  	Value   	Pattern
-;--------------	----------------	----------------	--------	--------	--------	--------	--------
+;;              	                	                	Param   	Units   	Scale   	Baseline	Baseline
+;;Node          	Parameter       	Time Series     	Type    	Factor  	Factor  	Value   	Pattern
+;;--------------	----------------	----------------	--------	--------	--------	--------	--------
 default_qgep_node           	FLOW            	default_qgep_inflow_timeserie    	FLOW    	1.0     	1.0     	          	        
 
 
 [CURVES]
-;Name          	Type      	X-Value   	Y-Value   
-;--------------	----------	----------	----------
+;;Name          	Type      	X-Value   	Y-Value   
+;;--------------	----------	----------	----------
 default_qgep_pump_curve	Pump1     	0         	5.0       
 
 
-[RAINGAGES]
-;Name	Format	Interval	SCF	Source
-default_qgep_raingage	INTENSITY	1:00	1.0	TIMESERIES default_qgep_raingage_timeserie
-
-
 [TIMESERIES]
-;Name          	Date      	Time      	Value     
-;--------------	----------	----------	----------
+;;Name          	Date      	Time      	Value     
+;;--------------	----------	----------	----------
 default_qgep_raingage_timeserie    	01/01/2000	00:00     	0.00000   
 default_qgep_raingage_timeserie    	          	00:15     	40.00000  
 default_qgep_raingage_timeserie    	          	03:00     	40.00000  
