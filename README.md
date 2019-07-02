@@ -53,10 +53,24 @@ qs.write_input()
 ### I/O Error 103 
 The .inp file is still open in Python. Close Python.
 
-### Import errors
+### Solve import errors
 
 `Undefined Node`
 The node doesn't exist in junctions, outfalls, dividers, storages
 
 `Undefined Link`
 The link doesn't exist im conduits, pumps, orifices, weirs, outlets
+
+You have to solve the errors in the order they appear in the report. Some errors are interrelated (i.e. a node in a conduit is not defined => the conduit is not imported => Undefined link error)
+
+## Run a simulation
+Use the *lightning* button
+
+### Solve running errors
+E
+
+`ERROR 211: invalid number -XXX at line XXX of [JUNC] section:`
+
+A negative number is provided for the depth => change the value in QGEP or in the .inp file.
+
+## Default values

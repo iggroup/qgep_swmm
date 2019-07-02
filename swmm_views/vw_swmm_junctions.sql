@@ -24,8 +24,8 @@ LEFT JOIN qgep_od.wastewater_structure ws ON ws.obj_id::text = ma.obj_id::text
 LEFT JOIN qgep_od.wastewater_networkelement we ON we.fk_wastewater_structure::text = ws.obj_id::text
 LEFT JOIN qgep_od.wastewater_node wn on wn.obj_id = we.obj_id
 LEFT JOIN qgep_od.cover co on ws.fk_main_cover = co.obj_id
-WHERE function != 4798 -- separating_structure -> used in swmm dividers
-AND wn.obj_id is not null
+WHERE wn.obj_id is not null
+--AND function != 4798 -- separating_structure -> used in swmm dividers
 
 UNION ALL
 
@@ -45,7 +45,8 @@ LEFT JOIN qgep_od.wastewater_structure ws ON ws.obj_id::text = ss.obj_id::text
 LEFT JOIN qgep_od.wastewater_networkelement we ON we.fk_wastewater_structure::text = ws.obj_id::text
 LEFT JOIN qgep_od.wastewater_node wn on wn.obj_id = we.obj_id
 LEFT JOIN qgep_od.cover co on ws.fk_main_cover = co.obj_id
-WHERE function != 4799 -- separating_structure -> used in swmm dividers
+WHERE wn.obj_id is not null 
+--AND function != 4799 -- separating_structure -> used in swmm dividers
 AND function NOT IN ( -- must be the same list in vw_swmm_storages
 6397, --"pit_without_drain"
 -- 245, --"drop_structure"
@@ -78,4 +79,4 @@ AND function NOT IN ( -- must be the same list in vw_swmm_storages
 -- 3008, --"unknown"
 -- 2745, --"vortex_manhole"
 )
-AND wn.obj_id is not null
+

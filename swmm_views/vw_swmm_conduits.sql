@@ -12,7 +12,14 @@ SELECT
 	re.obj_id as Name,
 	coalesce(from_wn.obj_id, 'default_qgep_node') as FromNode,
 	coalesce(to_wn.obj_id, 'default_qgep_node') as ToNode,
-	re.length_effective as Length,
+	CASE 
+		--WHEN re.length_effective <= 0.01 THEN st_length(progression_geometry)
+		WHEN re.length_effective <= 0.01 AND st_length(progression_geometry) <= 0.01 THEN 0.01
+		WHEN re.length_effective <= 0.01 AND st_length(progression_geometry) >= 0.01 THEN st_length(progression_geometry)
+		WHEN re.length_effective IS NULL AND st_length(progression_geometry) <= 0.01 THEN 0.01
+		WHEN re.length_effective IS NULL AND st_length(progression_geometry) >= 0.01 THEN st_length(progression_geometry)
+		ELSE re.length_effective
+	END as Length,
 	coalesce(re.wall_roughness,0.01) as Roughness,
 	coalesce((rp_from.level-from_wn.bottom_level),0) as InletOffset,
 	coalesce((rp_to.level-to_wn.bottom_level),0) as OutletOffset,

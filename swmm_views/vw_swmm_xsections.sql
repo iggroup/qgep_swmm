@@ -17,9 +17,13 @@ SELECT DISTINCT
 		WHEN pp.profile_type = 3355 THEN 'CUSTOM'		-- special
 		WHEN pp.profile_type = 3352 THEN 'ARCH'			-- mouth
 		WHEN pp.profile_type = 3354 THEN 'PARABOLIC'	-- open
-		ELSE 'DUMMY' 									-- unknown
+		ELSE 'CIRCULAR'
 	END as Shape,
-	re.clear_height as Geom1,
+	CASE 
+		WHEN re.clear_height = 0 THEN 100
+		WHEN re.clear_height IS NULL THEN 100
+		ELSE re.clear_height
+	END as Geom1,
 	0 as Geom2,
 	0 as Geom3,
 	0 as Geom4,

@@ -7,7 +7,7 @@ psql -v ON_ERROR_STOP=on -f "%DIR%\vw_swmm_create_schema.sql" "service=%PGSERVIC
 
 rem create views
 psql -v ON_ERROR_STOP=on -f "%DIR%\vw_swmm_conduits.sql" "service=%PGSERVICE%" 
-psql -v ON_ERROR_STOP=on -f "%DIR%\vw_swmm_dividers.sql" "service=%PGSERVICE%" 
+rem psql -v ON_ERROR_STOP=on -f "%DIR%\vw_swmm_dividers.sql" "service=%PGSERVICE%" 
 psql -v ON_ERROR_STOP=on -f "%DIR%\vw_swmm_junctions.sql" "service=%PGSERVICE%" 
 psql -v ON_ERROR_STOP=on -f "%DIR%\vw_swmm_outfalls.sql" "service=%PGSERVICE%" 
 psql -v ON_ERROR_STOP=on -f "%DIR%\vw_swmm_pumps.sql" "service=%PGSERVICE%" 
@@ -23,7 +23,7 @@ psql -v ON_ERROR_STOP=on -f "%DIR%\vw_swmm_polygons.sql" "service=%PGSERVICE%"
 
 rem drop copies if exists
 psql -v ON_ERROR_STOP=on -c "DROP TABLE IF EXISTS qgep_swmm.conduits" 
-psql -v ON_ERROR_STOP=on -c "DROP TABLE IF EXISTS qgep_swmm.dividers" 
+rem psql -v ON_ERROR_STOP=on -c "DROP TABLE IF EXISTS qgep_swmm.dividers" 
 psql -v ON_ERROR_STOP=on -c "DROP TABLE IF EXISTS qgep_swmm.junctions" 
 psql -v ON_ERROR_STOP=on -c "DROP TABLE IF EXISTS qgep_swmm.outfalls" 
 psql -v ON_ERROR_STOP=on -c "DROP TABLE IF EXISTS qgep_swmm.pumps" 
@@ -40,7 +40,7 @@ psql -v ON_ERROR_STOP=on -c "DROP TABLE IF EXISTS qgep_swmm.raingages"
 
 rem copy data from the views into tables
 psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.conduits AS TABLE qgep_swmm.vw_conduits" 
-psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.dividers AS TABLE qgep_swmm.vw_dividers" 
+rem psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.dividers AS TABLE qgep_swmm.vw_dividers" 
 psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.junctions AS TABLE qgep_swmm.vw_junctions" 
 psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.outfalls AS TABLE qgep_swmm.vw_outfalls" 
 psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.pumps AS TABLE qgep_swmm.vw_pumps" 
