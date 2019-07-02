@@ -11,7 +11,7 @@ CREATE OR REPLACE VIEW qgep_swmm.vw_storages AS
 SELECT
 	wn.obj_id as Name,
 	coalesce(wn.bottom_level,0) as InvertElev,
-	coalesce((co.level-wn.bottom_level,0) as MaxDepth,
+	coalesce((co.level-wn.bottom_level),0) as MaxDepth,
 	0 as InitDepth,
 	'FUNCTIONAL' as Shape,
 	1000 as CurveCoefficientOrCurveName, -- curve coefficient if FONCTIONAL curve name if TABULAR
@@ -22,8 +22,6 @@ SELECT
 	NULL as Psi,
 	NULL as Ksat, -- conductivity
 	NULL as IMD,	
-	--st_x(wn.situation_geometry) as X_coordinate,
-	--st_y(wn.situation_geometry) as Y_coordinate,
 	ws.identifier as description,
 	ss.obj_id as tag,
 	wn.situation_geometry as geom

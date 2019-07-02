@@ -35,7 +35,8 @@ psql -v ON_ERROR_STOP=on -c "DROP TABLE IF EXISTS qgep_swmm.xsections"
 psql -v ON_ERROR_STOP=on -c "DROP TABLE IF EXISTS qgep_swmm.losses"
 psql -v ON_ERROR_STOP=on -c "DROP TABLE IF EXISTS qgep_swmm.coordinates"
 psql -v ON_ERROR_STOP=on -c "DROP TABLE IF EXISTS qgep_swmm.vertices" 
-psql -v ON_ERROR_STOP=on -c "DROP TABLE IF EXISTS qgep_swmm.polygons" 
+psql -v ON_ERROR_STOP=on -c "DROP TABLE IF EXISTS qgep_swmm.polygons"
+psql -v ON_ERROR_STOP=on -c "DROP TABLE IF EXISTS qgep_swmm.raingages" 
 
 rem copy data from the views into tables
 psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.conduits AS TABLE qgep_swmm.vw_conduits" 
@@ -52,3 +53,4 @@ psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.losses AS TABLE qgep_swmm.vw
 psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.coordinates AS TABLE qgep_swmm.vw_coordinates"
 psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.vertices AS TABLE qgep_swmm.vw_vertices" 
 psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.polygons AS TABLE qgep_swmm.vw_polygons" 
+psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.raingages AS TABLE qgep_swmm.vw_raingages" 

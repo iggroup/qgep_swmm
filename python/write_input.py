@@ -8,12 +8,12 @@ import subprocess
 
 class qgep_swmm:
     
-    def __init__(self):
-        self.title = 'title simulation'
-        self.service = 'pg_qgep_demo_data'
-        self.input_file = 'S:\\2_INTERNE_SION\\0_COLLABORATEURS\\PRODUIT_Timothee\\02_work\\qgep_swmm\\input\\qgep_swmm.inp'
-        self.options_template_file = 'S:\\2_INTERNE_SION\\0_COLLABORATEURS\\PRODUIT_Timothee\\02_work\\qgep_swmm\\simulation_parameters\\default_qgep_swmm_parameters.inp'#default_qgep_swmm_parameters
-        self.output_file = ''
+    def __init__(self, title, service, inpfile, inptemplate, outfile):
+        self.title = title
+        self.service = service
+        self.input_file = inpfile
+        self.options_template_file = inptemplate
+        self.output_file = outfile
 
     def getSwmmTable(self, tableName):
         
@@ -127,13 +127,14 @@ class qgep_swmm:
         f.write(self.copy_parameters_from_template('OPTIONS'))
         f.write(self.copy_parameters_from_template('REPORT'))
         f.write(self.copy_parameters_from_template('FILES'))
-        f.write(self.copy_parameters_from_template('RAINGAGES'))
+        #f.write(self.copy_parameters_from_template('RAINGAGES'))
         f.write(self.copy_parameters_from_template('HYDROGRAPHS'))
         f.write(self.copy_parameters_from_template('EVAPORATION'))
         f.write(self.copy_parameters_from_template('TEMPERATURE'))
         
         f.write(self.swmmTable('SUBCATCHMENTS'))
         f.write(self.swmmTable('SUBAREAS'))
+        f.write(self.swmmTable('RAINGAGES'))
         f.write(self.swmmTable('INFILTRATION'))
         f.write(self.swmmTable('POLYGONS'))
         
@@ -232,7 +233,13 @@ class qgep_swmm:
         return
 
 PATH2SCHEMA = 'S:/2_INTERNE_SION/0_COLLABORATEURS/PRODUIT_Timothee/02_work/qgep_swmm/scripts/install_swmm_views.bat'
+TITLE = 'title simulation'
+PGSERVICE = 'pg_qgep_demo_data'
+INPFILE = 'S:\\2_INTERNE_SION\\0_COLLABORATEURS\\PRODUIT_Timothee\\02_work\\qgep_swmm\\input\\qgep_swmm.inp'
+INPTEMPLATE = 'S:\\2_INTERNE_SION\\0_COLLABORATEURS\\PRODUIT_Timothee\\02_work\\qgep_swmm\\simulation_parameters\\default_qgep_swmm_parameters.inp'
+OUTFILE = ''
+
 subprocess.call([PATH2SCHEMA])   
-qs = qgep_swmm()
+qs = qgep_swmm(TITLE, PGSERVICE, INPFILE, INPTEMPLATE, OUTFILE)
 qs.write_input()
 print ('done')
