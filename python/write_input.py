@@ -58,12 +58,12 @@ class qgep_swmm:
                     # Does not write values stored in columns descriptions, tags and geom
                     if attributes[i] not in ('description', 'tag', 'geom'):
                         if str(v) != 'None':
-                            m = re.search('^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d:\d\d):\d\d',str(v)) # for date and time saved as timestamps
-                
-                            if m:
-                                tbl += '/'.join(m.group(2,3,1))+'\t'+m.group(4)+'\t'
-                            else:
-                                tbl += str(v)+'\t'
+#                            m = re.search('^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d:\d\d):\d\d',str(v)) # for date and time saved as timestamps
+#                
+#                            if m:
+#                                tbl += '/'.join(m.group(2,3,1))+'\t'+m.group(4)+'\t'
+#                            else:
+                            tbl += str(v)+'\t'
                         else: 
                             tbl += '\t'
                 tbl += '\n'

@@ -12,9 +12,16 @@ SELECT
 	replace(ca.obj_id, ' ', '_') as Name,
 	('raingage@' || replace(ca.obj_id, ' ', '_'))::varchar as RainGage,
 	coalesce(fk_wastewater_networkelement_ww_current, replace(ca.obj_id, ' ', '_')) as Outlet,
-	surface_area as Area,
+	CASE 
+		when surface_area is null then st_area(perimeter_geometry)
+		when surface_area < 0.01 then st_area(perimeter_geometry)
+		else surface_area
+	END as Area,
 	25 as percImperv,
-	500 as Width,
+	(
+	st_maxdistance(st_centroid(perimeter_geometry), ST_ExteriorRing(perimeter_geometry)) 
+	+ st_distance(st_centroid(perimeter_geometry), ST_ExteriorRing(perimeter_geometry))
+	)/2 as Width, -- Width of overland flow path estimation
 	0.5 as percSlope,
 	0 as CurbLen,
 	NULL as SnowPack,
