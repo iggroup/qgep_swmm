@@ -21,9 +21,11 @@ password=postgres
 
 ## Installation of QGEP-SWMM schema, views and tables
 
-Launch `.\scripts\install_swmm_views.bat`. This script:
-* Create the schema `qgep_swmm`
-* Create views of qgep tables for correspondances with SWMM tables
+Launch `.\scripts\install_swmm_views.bat`. 
+
+This script:
+* Creates the schema `qgep_swmm`
+* Creates views of qgep tables for correspondances with SWMM tables
 * Copies data in the views in tables (record a state of the qgep database)
 
 ## Installation of python scripts
