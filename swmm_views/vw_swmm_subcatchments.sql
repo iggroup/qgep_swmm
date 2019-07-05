@@ -1,10 +1,8 @@
-DROP VIEW IF EXISTS qgep_swmm.vw_subcatchments;
-
-
 --------
 -- View for the swmm module class junction
 -- 20190329 qgep code sprint SB, TP
 --------
+DROP VIEW IF EXISTS qgep_swmm.vw_subcatchments;
 
 CREATE OR REPLACE VIEW qgep_swmm.vw_subcatchments AS
 
@@ -39,12 +37,29 @@ SELECT
 	ST_Simplify(ST_CurveToLine(perimeter_geometry), 5, TRUE) as geom
 FROM qgep_od.catchment_area as ca
 LEFT JOIN qgep_od.wastewater_networkelement we on we.obj_id = ca.fk_wastewater_networkelement_rw_current
-LEFT JOIN qgep_od.wastewater_node wn on wn.obj_id = we.obj_id
+LEFT JOIN qgep_od.wastewater_node wn on wn.obj_id = we.obj_id;
+
+-- Creates subarea related to the subcatchment
+DROP VIEW IF EXISTS qgep_swmm.vw_subareas;
+
+CREATE OR REPLACE VIEW qgep_swmm.vw_subareas AS
+SELECT 
+	replace(ca.obj_id, ' ', '_') as Subcatchment,
+	0.01 as NImperv,
+	0.1 as NPerv,
+	0.05 as SImperv,
+	0.05 as SPerv,
+	25 as PctZero,
+	'OUTLET'::varchar as RouteTo,
+	NULL::float as PctRouted,
+	ca.identifier || ', ' || ca.remark as description,
+	ca.obj_id::varchar as tag
+FROM qgep_od.catchment_area as ca;
 
 -- Creates a default raingage for each subcatchment
 DROP VIEW IF EXISTS qgep_swmm.vw_raingages;
-CREATE OR REPLACE VIEW qgep_swmm.vw_raingages AS
 
+CREATE OR REPLACE VIEW qgep_swmm.vw_raingages AS
 SELECT 
 	('raingage@' || replace(ca.obj_id, ' ', '_'))::varchar as Name,
 	'INTENSITY'::varchar as Format,
@@ -53,3 +68,31 @@ SELECT
 	'TIMESERIES default_qgep_raingage_timeserie'::varchar as Source,
 	st_centroid(perimeter_geometry) as geom
 FROM qgep_od.catchment_area as ca;
+
+-- Creates default infiltration for each subcatchment
+DROP VIEW IF EXISTS qgep_swmm.vw_infiltration;
+
+CREATE OR REPLACE VIEW qgep_swmm.vw_infiltration AS
+SELECT 
+	replace(ca.obj_id, ' ', '_')  as Subcatchment,
+	3 as MaxRate,
+	0.5 as MinRate,
+	4 as Decay,
+	7 as DryTime,
+	0 as MaxInfil
+FROM qgep_od.catchment_area as ca;
+
+
+-- creates coverages
+DROP VIEW IF EXISTS qgep_swmm.vw_coverages;
+
+CREATE OR REPLACE VIEW qgep_swmm.vw_coverages AS
+SELECT 
+	replace(ca.obj_id, ' ', '_')  as Subcatchment,
+	pzk.value_en as landUse,
+	round((st_area(st_intersection(ca.perimeter_geometry, pz.perimeter_geometry))/st_area(ca.perimeter_geometry))::numeric,2)*100 as percent
+FROM qgep_od.catchment_area ca, qgep_od.planning_zone pz
+LEFT JOIN qgep_vl.planning_zone_kind pzk on pz.kind = pzk.code
+WHERE st_intersects(ca.perimeter_geometry, pz.perimeter_geometry) 
+AND st_isvalid(ca.perimeter_geometry) AND st_isvalid(pz.perimeter_geometry)
+ORDER BY ca.obj_id, percent DESC;

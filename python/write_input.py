@@ -126,65 +126,95 @@ class qgep_swmm:
         print (self.input_file)
         filename = self.input_file
         f = codecs.open(filename, 'w',encoding='utf-8')
+        
+        #Title / Notes
+        #--------------
         f.write('[TITLE]\n')
         f.write(self.title+'\n\n')
         
-        # Copies options from template 
-        #-----------------------------
+        # Options
+        #--------
         f.write(self.copy_parameters_from_template('OPTIONS'))
         f.write(self.copy_parameters_from_template('REPORT'))
         f.write(self.copy_parameters_from_template('FILES'))
-        #f.write(self.copy_parameters_from_template('RAINGAGES'))
+        f.write(self.copy_parameters_from_template('EVENTS'))
+        
+        # Climatology
+        #------------
         f.write(self.copy_parameters_from_template('HYDROGRAPHS'))
         f.write(self.copy_parameters_from_template('EVAPORATION'))
         f.write(self.copy_parameters_from_template('TEMPERATURE'))
-        
+       
+        # Hydrology
+        #----------
+        f.write(self.swmmTable('RAINGAGES'))
         f.write(self.swmmTable('SUBCATCHMENTS'))
         f.write(self.swmmTable('SUBAREAS'))
-        f.write(self.swmmTable('RAINGAGES'))
+        f.write(self.swmmTable('AQUIFERS'))
         f.write(self.swmmTable('INFILTRATION'))
         f.write(self.swmmTable('POLYGONS'))
         
-        f.write(self.copy_parameters_from_template('LID_CONTROLS'))
-        f.write(self.copy_parameters_from_template('LID_USAGE'))
-        f.write(self.copy_parameters_from_template('AQUIFERS'))
+        
+        f.write(self.copy_parameters_from_template('INFLOWS'))
         f.write(self.copy_parameters_from_template('GROUNDWATER'))
         f.write(self.copy_parameters_from_template('SNOWPACKS'))
+        f.write(self.copy_parameters_from_template('HYDROGAPHS'))
+        f.write(self.copy_parameters_from_template('LID_CONTROLS'))
+        f.write(self.copy_parameters_from_template('LID_USAGE'))
         
-        # NODES
+        # Hydraulics: nodes
+        #------------------
         f.write(self.swmmTable('JUNCTIONS'))
-        # Create default junction to avoid error
+        # Create default junction to avoid errors
         f.write('default_qgep_node\t0\t0\n\n')
         f.write(self.swmmTable('OUTFALLS'))
-        f.write(self.swmmTable('DIVIDERS'))
         f.write(self.swmmTable('STORAGE'))
         f.write(self.swmmTable('COORDINATES'))
         
-        # LINKS
+        f.write(self.copy_parameters_from_template('DIVIDERS'))
+        
+        # Hydraulics: links
+        #------------------
         f.write(self.swmmTable('CONDUITS'))
         f.write(self.swmmTable('PUMPS'))
-        f.write(self.swmmTable('ORIFICES'))
-        f.write(self.swmmTable('WEIRS'))
-        f.write(self.swmmTable('OUTLETS'))
+        f.write(self.copy_parameters_from_template('ORIFICES'))
+        f.write(self.copy_parameters_from_template('WEIRS'))
+        f.write(self.copy_parameters_from_template('OUTLETS'))
         f.write(self.swmmTable('XSECTIONS'))
         f.write(self.swmmTable('LOSSES'))
         f.write(self.swmmTable('VERTICES'))
         
         f.write(self.copy_parameters_from_template('TRANSECTS'))
         f.write(self.copy_parameters_from_template('CONTROLS'))
+        
+        # Quality
+        #--------
+        f.write(self.swmmTable('LANDUSES'))
+        f.write(self.swmmTable('COVERAGES'))
+        
         f.write(self.copy_parameters_from_template('POLLUTANTS'))
-        f.write(self.copy_parameters_from_template('LANDUSES'))
-        f.write(self.copy_parameters_from_template('COVERAGES'))
         f.write(self.copy_parameters_from_template('BUILDUP'))
         f.write(self.copy_parameters_from_template('WASHOFF'))
         f.write(self.copy_parameters_from_template('TREATMENT'))
-        f.write(self.copy_parameters_from_template('INFLOWS'))
         f.write(self.copy_parameters_from_template('DWF'))
-        f.write(self.copy_parameters_from_template('PATTERNS'))
         f.write(self.copy_parameters_from_template('RDII'))
         f.write(self.copy_parameters_from_template('LOADINGS'))
+        
+        # Curves
+        #-------
         f.write(self.copy_parameters_from_template('CURVES'))
+        
+        # Time series
+        #------------
         f.write(self.copy_parameters_from_template('TIMESERIES'))
+        
+        # Time patterns
+        #--------------
+        f.write(self.copy_parameters_from_template('PATTERNS'))
+        
+        # Map labels
+        #-----------
+        f.write(self.copy_parameters_from_template('LABELS'))
         
         f.write(self.swmmTable('TAGS'))
 
