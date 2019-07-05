@@ -102,11 +102,12 @@ By default:
 * a subcatchment is created for each QGEP catchment area
 * it is linked to a rain gage. 
 * The width is computed from the mean of the minimal / maximal distance between the outlet and the catchment area contour. If the outlet is unknow the centroid is used rather thant the outlet.
+* The coverages (attribute land uses) are computed from the intersection between the catchment area and the planning zone
 * Other parameters have default SWMM values
 
 The subcatchment can be linked to an aquifer via the groundwater attribute.
 
-The kind of landuses can be inserted with the Land Uses attributes
+
 
 #### Snow Packs
 * Copied from the template input file if exists.
@@ -120,14 +121,14 @@ The kind of landuses can be inserted with the Land Uses attributes
 ### Hydraulics
 
 #### Junctions
-QGEP_SWMM creates a junction for each QGEP manhole and some kind of special structures.
+* QGEP_SWMM creates a junction for each QGEP manhole and some kind of special structures.
 
-See `vw_swmm_junctions.sql` for details.
+* See `vw_swmm_junctions.sql` for details.
 
 #### Outfalls
-QGEP_SWMM creates an outfall for each QGEP discharge_point.
+* QGEP_SWMM creates an outfall for each QGEP discharge_point.
 
-See `vw_swmm_outfalls.sql` for details.
+* See `vw_swmm_outfalls.sql` for details.
 
 #### Dividers
 * Are not created from QGEP objects.
@@ -135,19 +136,19 @@ See `vw_swmm_outfalls.sql` for details.
 * Copied from the template input file if exists.
 
 #### Storage Units
-QGEP_SWMM creates a storage for some kind of QGEP infiltration installations and some kind of QGEP special structures.
+* QGEP_SWMM creates a storage for some kind of QGEP infiltration installations and some kind of QGEP special structures.
 
-See `vw_swmm_storages.sql` for details.
+* See `vw_swmm_storages.sql` for details.
 
 #### Conduits
-QGEP_SWMM creates a conduit for each QGEP reach.
+* QGEP_SWMM creates a conduit for each QGEP reach.
 
-See `vw_swmm_conduits.sql` for details.
+* See `vw_swmm_conduits.sql` for details.
 
 #### Pumps
-QGEP_SWMM creates a pump for each QGEP pump.
+* QGEP_SWMM creates a pump for each QGEP pump.
 
-See `vw_swmm_pumps.sql` for details.
+* See `vw_swmm_pumps.sql` for details.
 
 #### Orifices
 * Are not created from QGEP objects.
@@ -175,6 +176,11 @@ See `vw_swmm_pumps.sql` for details.
 * Copied from the template input file if exists.
 
 ### Quality
+
+#### Land uses
+* QGEP_SWMM creates a land use for each QGEP planning zone kind.
+
+#### Pollutants
 * Are not created from QGEP objects.
 
 * Copied from the template input file if exists.
@@ -212,8 +218,8 @@ A negative number is provided for the depth => change the value in QGEP or in th
 ## Run current state simulation
 
 ## Run aimed state simulation
+* Inflows increase
+* Impervious areas increase
 
 ## Run variants (network is modified)
-
-# Default values
-
+* New links and new nodes are created
