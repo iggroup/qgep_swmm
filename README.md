@@ -31,7 +31,7 @@ This script:
 ## Installation of python scripts
 The script require `psycopg2` to connect to the database.
 
-[Installation](https://pypi.org/project/psycopg2/)
+[Psycopg2 installation](https://pypi.org/project/psycopg2/)
 
 # QGEP - SWMM workflow
 
@@ -106,7 +106,6 @@ By default:
 * Other parameters have default SWMM values
 
 The subcatchment can be linked to an aquifer via the groundwater attribute.
-
 
 
 #### Snow Packs
@@ -217,9 +216,23 @@ A negative number is provided for the depth => change the value in QGEP or in th
 
 ## Run current state simulation
 
+### Minimal parameters to be set
+! TO BE CHECKED!
+
+* `Time series` Create a time serie for the rain (default_qgep_raingage_timeserie) / the time serie have to be linked to the raingages `Hydrology > Rain Gages` (which are linked to the subcatchments)
+
+* `Hydrology > Subcatchment`: Set percent of of impervious area and infiltration parameters
+
+
+### Optional parameters
+* `Climatology > Evaporation`
+
 ## Run aimed state simulation
-* Inflows increase
-* Impervious areas increase
+* Copy the inp file used for the previous simulation
+
+### Impervious areas increase
+Hydrology > Subcatchements > % Imperv
+
 
 ## Run variants (network is modified)
-* New links and new nodes are created
+* New links and new nodes are created directly in SWMM GUI
