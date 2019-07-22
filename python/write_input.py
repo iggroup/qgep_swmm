@@ -222,6 +222,95 @@ class qgep_swmm:
         del f
         
         return
+    
+    def extract_result_lines(table_title):
+        o = codecs.open(self.output_file,'r',encoding='utf-8')
+        line = o.readline()
+        noLine = 0
+        lines=[]
+        titleFound=False
+        endTableFound = False
+        while line:
+            line = line.rstrip()
+            # Search for the table title
+            if line.find(table_title) != -1:
+                titleFound = True
+                lineAfterTitle = 0
+            
+            if titleFound and lineAfterTitle > 7 and line == '':
+                endTableFound = True
+            
+            if titleFound and endTableFound == False and lineAfterTitle > 7:
+                lines.append(line.split())
+                
+                
+            if titleFound:       
+                lineAfterTitle += 1
+                
+            noLine+=1
+            line = o.readline()
+        
+        return lines
+    
+    def extract_node_depth_summary():
+        
+        data = extract_result_lines('Node Depth Summary')
+        result = {}
+        for d in data:
+            curRes = {}
+            curRes['id'] = d[0]
+            curRes['type'] = d[1]
+            curRes['average_depth'] = d[2]
+            curRes['maximum_depth'] = d[3]
+            curRes['maximum_HGL'] = d[4]
+            curRes['time_max_day'] = d[5]
+            curRes['time_max_time'] = d[6]
+            curRes['reported_max_depth'] = d[7]
+            result[d[0]] = curRes
+        return result
+    
+    def extract_link_flow_summary():
+        
+        data = extract_result_lines('Link Flow Summary')
+        result = {}
+        for d in data:
+            
+            curRes = {}
+            curRes['id'] = d[0]
+            curRes['type'] = d[1]
+            curRes['maximum_flow'] = d[2]
+            curRes['time_max_day'] = d[3]
+            curRes['time_max_time'] = d[4]
+            if d[1] == 'CONDUIT':
+                curRes['maximum_velocity'] = d[5]
+                curRes['max_over_full_flow'] = d[6]
+                curRes['max_over_full_depth'] = d[7]
+            elif d[1] == 'PUMP':
+                curRes['max_over_full_flow'] = d[5]
+                
+            result[d[0]] = curRes
+        return result
+    
+    def extract_cross_section_summary():
+        
+        data = extract_result_lines('Cross Section Summary')
+        result = {}
+        for d in data:
+            
+            curRes = {}
+            curRes['id'] = d[0]
+            curRes['shape'] = d[1]
+            curRes['full_depth'] = d[2]
+            curRes['full_area'] = d[3]
+            curRes['hyd_rad'] = d[4]
+            curRes['max_width'] = d[5]
+            curRes['no_of_barrels'] = d[6]
+            curRes['full_flow'] = d[7]
+              
+            result[d[0]] = curRes
+        return result
+            
+        
 
 PATH2SCHEMA = 'S:/2_INTERNE_SION/0_COLLABORATEURS/PRODUIT_Timothee/02_work/qgep_swmm/scripts/install_swmm_views.bat'
 TITLE = 'title simulation'
