@@ -61,3 +61,12 @@ psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.tags AS TABLE qgep_swmm.vw_t
 psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.aquifers AS TABLE qgep_swmm.vw_aquifers"
 psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.landuses AS TABLE qgep_swmm.vw_landuses"
 psql -v ON_ERROR_STOP=on -c "CREATE TABLE qgep_swmm.coverages AS TABLE qgep_swmm.vw_coverages"
+
+rem create tables to store the results
+psql -v ON_ERROR_STOP=on -f "%DIR%\swmm_xsections_results.sql" "service=%PGSERVICE%"
+psql -v ON_ERROR_STOP=on -f "%DIR%\swmm_nodes_results.sql" "service=%PGSERVICE%"
+psql -v ON_ERROR_STOP=on -f "%DIR%\swmm_links_results.sql" "service=%PGSERVICE%"
+
+rem create view to show the results
+psql -v ON_ERROR_STOP=on -f "%DIR%\vw_swmm_nodes_results.sql" "service=%PGSERVICE%"
+psql -v ON_ERROR_STOP=on -f "%DIR%\vw_swmm_links_results.sql" "service=%PGSERVICE%"

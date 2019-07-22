@@ -309,6 +309,30 @@ class qgep_swmm:
               
             result[d[0]] = curRes
         return result
+    
+    def save_node_depth_summary():
+        con = None
+        obj_id = None
+        sql = """
+        """
+        try:
+            con = psycopg2.connect(service=self.service)
+            cur = con.cursor()
+            cur.executemany(sql, (value1,value2))
+            obj_id = cur.fetchone()[0]
+        
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        finally:
+            if con is not None:
+                con.close()
+        return obj_id
+    
+    def save_link_flow_summary():
+        return
+    
+    def save_cross_section_summary():
+        return
             
         
 
