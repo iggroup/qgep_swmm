@@ -223,7 +223,7 @@ class qgep_swmm:
         
         return
     
-    def extract_result_lines(table_title):
+    def extract_result_lines(self, table_title):
         o = codecs.open(self.output_file,'r',encoding='utf-8')
         line = o.readline()
         noLine = 0
@@ -252,10 +252,10 @@ class qgep_swmm:
         
         return lines
     
-    def extract_node_depth_summary():
+    def extract_node_depth_summary(self):
         
-        data = extract_result_lines('Node Depth Summary')
-        result = {}
+        data = self.extract_result_lines('Node Depth Summary')
+        result = []
         for d in data:
             curRes = {}
             curRes['id'] = d[0]
@@ -266,13 +266,13 @@ class qgep_swmm:
             curRes['time_max_day'] = d[5]
             curRes['time_max_time'] = d[6]
             curRes['reported_max_depth'] = d[7]
-            result[d[0]] = curRes
+            result.append(curRes)
         return result
     
-    def extract_link_flow_summary():
+    def extract_link_flow_summary(self):
         
-        data = extract_result_lines('Link Flow Summary')
-        result = {}
+        data = self.extract_result_lines('Link Flow Summary')
+        result = []
         for d in data:
             
             curRes = {}
@@ -287,14 +287,17 @@ class qgep_swmm:
                 curRes['max_over_full_depth'] = d[7]
             elif d[1] == 'PUMP':
                 curRes['max_over_full_flow'] = d[5]
+                curRes['maximum_velocity'] = None
+                curRes['max_over_full_depth'] = None
                 
-            result[d[0]] = curRes
+                
+            result.append(curRes)
         return result
     
-    def extract_cross_section_summary():
+    def extract_cross_section_summary(self):
         
-        data = extract_result_lines('Cross Section Summary')
-        result = {}
+        data = self.extract_result_lines('Cross Section Summary')
+        result = []
         for d in data:
             
             curRes = {}
@@ -307,33 +310,107 @@ class qgep_swmm:
             curRes['no_of_barrels'] = d[6]
             curRes['full_flow'] = d[7]
               
-            result[d[0]] = curRes
+            result.append(curRes)
         return result
     
-    def save_node_depth_summary():
+    def save_node_depth_summary(self):
+        # Delete existing results
+        self.delete_table('nodes_results')
+        # Extract node depth table
+        data = self.extract_node_depth_summary()
         con = None
-        obj_id = None
         sql = """
+        INSERT INTO qgep_swmm.nodes_results VALUES (
+        %(id)s, %(type)s, %(average_depth)s,
+        %(maximum_depth)s, %(maximum_HGL)s, %(time_max_day)s, 
+        %(time_max_time)s, %(reported_max_depth)s)
         """
         try:
             con = psycopg2.connect(service=self.service)
             cur = con.cursor()
-            cur.executemany(sql, (value1,value2))
-            obj_id = cur.fetchone()[0]
-        
+            cur.executemany(sql, data)
+            con.commit()
         except (Exception, psycopg2.DatabaseError) as error:
-            print(error)
+            print (error)
+
         finally:
             if con is not None:
                 con.close()
-        return obj_id
-    
-    def save_link_flow_summary():
         return
     
-    def save_cross_section_summary():
+    def save_link_flow_summary(self):
+        # Delete existing results
+        self.delete_table('links_results')
+        # Extract node depth table
+        data = self.extract_link_flow_summary()
+        print (data)
+        con = None
+        sql = """
+        INSERT INTO qgep_swmm.links_results VALUES (
+        %(id)s, %(type)s, %(maximum_flow)s,
+        %(time_max_day)s, %(time_max_time)s,
+        %(maximum_velocity)s, %(max_over_full_flow)s,  %(max_over_full_depth)s)
+        """
+        try:
+            con = psycopg2.connect(service=self.service)
+            cur = con.cursor()
+            cur.executemany(sql, data)
+            con.commit()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print (error)
+
+        finally:
+            if con is not None:
+                con.close()
         return
-            
+    
+    def save_cross_section_summary(self):
+                # Delete existing results
+        self.delete_table('xsections_results')
+        # Extract node depth table
+        data = self.extract_cross_section_summary()
+        con = None
+        sql = """
+        INSERT INTO qgep_swmm.xsections_results VALUES (
+        %(id)s, %(shape)s, %(full_depth)s,
+        %(full_area)s, %(hyd_rad)s, %(max_width)s, 
+        %(no_of_barrels)s, %(full_flow)s)
+        """
+        try:
+            con = psycopg2.connect(service=self.service)
+            cur = con.cursor()
+            cur.executemany(sql, data)
+            con.commit()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print (error)
+
+        finally:
+            if con is not None:
+                con.close()
+        return
+    
+    def delete_table(self, table_name):
+        conn = None
+        rows_deleted = 0
+        try:
+            # connect to the PostgreSQL database
+            conn = psycopg2.connect(service=self.service)
+            # create a new cursor
+            cur = conn.cursor()
+            # execute the UPDATE  statement
+            cur.execute("DELETE FROM qgep_swmm.%s" %table_name)
+            # get the number of updated rows
+            rows_deleted = cur.rowcount
+            # Commit the changes to the database
+            conn.commit()
+            # Close communication with the PostgreSQL database
+            cur.close()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        finally:
+            if conn is not None:
+                conn.close()
+        return rows_deleted
         
 
 PATH2SCHEMA = 'S:/2_INTERNE_SION/0_COLLABORATEURS/PRODUIT_Timothee/02_work/qgep_swmm/scripts/install_swmm_views.bat'
@@ -341,9 +418,12 @@ TITLE = 'title simulation'
 PGSERVICE = 'pg_qgep_demo_data'
 INPFILE = 'S:\\2_INTERNE_SION\\0_COLLABORATEURS\\PRODUIT_Timothee\\02_work\\qgep_swmm\\input\\qgep_swmm.inp'
 INPTEMPLATE = 'S:\\2_INTERNE_SION\\0_COLLABORATEURS\\PRODUIT_Timothee\\02_work\\qgep_swmm\\simulation_parameters\\default_qgep_swmm_parameters.inp'
-OUTFILE = ''
+OUTFILE = 'S:\\2_INTERNE_SION\\0_COLLABORATEURS\\PRODUIT_Timothee\\02_work\\qgep_swmm\\output\\swmm.out'
 
-subprocess.call([PATH2SCHEMA])   
+#subprocess.call([PATH2SCHEMA])   
 qs = qgep_swmm(TITLE, PGSERVICE, INPFILE, INPTEMPLATE, OUTFILE)
-qs.write_input()
-print ('done')
+#qs.write_input()
+#print ('done')
+#qs.save_node_depth_summary()
+#qs.save_link_flow_summary()
+qs.save_cross_section_summary()
